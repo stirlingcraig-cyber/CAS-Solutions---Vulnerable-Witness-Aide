@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Unofficial aide-memoire for planning interviews with vulnerable adult witnesses in Scotland: ADVOKATE, TED free recall, special measures and an AI prompt builder.">
+<meta name="robots" content="noindex">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>CAS Solutions · Vulnerable Witness Aide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky header with search over a two-column case-file (section rail + stages); rail becomes a chip row on phones. Checker band nods to Scottish police Sillitoe tartan. */
+:root{
+  --paper:#f3f5f8; --surface:#ffffff; --sunk:#eaeef3; --ink:#15202b; --muted:#546273; --line:#d5dce5;
+  --accent:#1c3d63; --accent-ink:#ffffff; --accent-soft:#e3ebf5;
+  --warn:#8a4f00; --warn-bg:#fff3dc; --ok:#1d6641; --ok-bg:#e2f3e9; --stop:#9b1c1c; --stop-bg:#fde8e8;
+  --hl:#ffe27a; --hl-ink:#15202b;
+  --f-display:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e141b; --surface:#16202b; --sunk:#111922; --ink:#e4eaf1; --muted:#9aa8b8; --line:#2a3645;
+  --accent:#8db5e6; --accent-ink:#0e141b; --accent-soft:#1d2c3e;
+  --warn:#f2b660; --warn-bg:#2d2213; --ok:#72d19c; --ok-bg:#13291d; --stop:#f29a9a; --stop-bg:#2e1616;
+  --hl:#6d5a10; --hl-ink:#fff6d1; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0e141b; --surface:#16202b; --sunk:#111922; --ink:#e4eaf1; --muted:#9aa8b8; --line:#2a3645;
+  --accent:#8db5e6; --accent-ink:#0e141b; --accent-soft:#1d2c3e;
+  --warn:#f2b660; --warn-bg:#2d2213; --ok:#72d19c; --ok-bg:#13291d; --stop:#f29a9a; --stop-bg:#2e1616;
+  --hl:#6d5a10; --hl-ink:#fff6d1; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:150px}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:1.75rem;font-weight:700}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+mark{background:var(--hl);color:var(--hl-ink);border-radius:2px;padding:0 1px}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1240px;margin:0 auto;padding:12px 16px;display:flex;gap:12px 20px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand h1{font-size:1.35rem;font-weight:700;letter-spacing:.01em}
+.brand .org{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.brand span:not(.org){font-size:.75rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.checker{height:8px;background:repeating-conic-gradient(var(--accent) 0 25%,var(--surface) 0 50%) 0 0/16px 16px;border-top:1px solid var(--line)}
+.search{position:relative;flex:1 1 320px;min-width:0}
+.search input[type=text]{width:100%;font:inherit;font-size:1rem;padding:10px 70px 10px 38px;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);color:var(--ink)}
+.search input[type=text]:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:2}
+.kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px;background:var(--surface)}
+.results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 10px 30px rgba(0,0,0,.18);max-height:min(60vh,480px);overflow:auto;z-index:30}
+.results .meta{padding:8px 12px;font-size:.78rem;color:var(--muted);border-bottom:1px solid var(--line)}
+.results button{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.results button:last-child{border-bottom:0}
+.results button:hover,.results button.act{background:var(--accent-soft)}
+.results .sec{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);font-weight:600}
+.results .snip{display:block;font-size:.88rem}
+.results .none{padding:14px 12px;color:var(--muted);font-size:.9rem}
+
+/* Shell */
+.shell{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:24px 64px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:32px}
+.rail{position:sticky;top:120px;align-self:start;display:flex;flex-direction:column;gap:2px}
+.rail .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 10px 6px}
+.rail a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink);padding:7px 10px;border-radius:var(--r);font-size:.9rem;border-left:3px solid transparent}
+.rail a:hover{background:var(--sunk)}
+.rail a.on{background:var(--accent-soft);border-left-color:var(--accent);font-weight:600}
+.rail a .n{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);min-width:1.4em}
+main{display:flex;flex-direction:column;gap:40px;min-width:0}
+section{display:flex;flex-direction:column;gap:16px;min-width:0}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:600}
+.lead{color:var(--muted);max-width:70ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+
+/* Flow */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.flow a{display:flex;flex-direction:column;gap:4px;padding:14px;text-decoration:none;color:var(--ink);border-right:1px solid var(--line);min-width:0}
+.flow a:last-child{border-right:0}
+.flow a:hover{background:var(--accent-soft)}
+.flow .n{font-family:var(--f-mono);font-size:.75rem;color:var(--accent)}
+.flow b{font-family:var(--f-display);font-size:1.05rem;font-weight:600;line-height:1.2}
+.flow small{color:var(--muted);font-size:.8rem}
+
+/* Notices */
+.note{display:flex;gap:12px;padding:12px 14px;border-radius:var(--r);font-size:.92rem;border:1px solid}
+.note b{font-weight:600}
+.note.warn{background:var(--warn-bg);border-color:color-mix(in srgb,var(--warn) 35%,transparent);color:var(--ink)}
+.note.warn .tag{color:var(--warn)}
+.note.stop{background:var(--stop-bg);border-color:color-mix(in srgb,var(--stop) 35%,transparent)}
+.note.stop .tag{color:var(--stop)}
+.note.ok{background:var(--ok-bg);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.note.ok .tag{color:var(--ok)}
+.tag{font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;font-weight:500;white-space:nowrap;padding-top:2px}
+
+/* Question list */
+.qlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.q{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 14px;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q .k{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent);white-space:nowrap;margin-top:2px}
+.q .k.inv{background:var(--warn-bg);color:var(--warn)}
+.q .t{min-width:0}
+.q .t .say{font-size:1rem}
+.q .t .why{font-size:.84rem;color:var(--muted);margin-top:3px}
+.copy{font:inherit;font-size:.78rem;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:4px;padding:3px 9px;cursor:pointer;white-space:nowrap}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+.copy.done{color:var(--ok);border-color:var(--ok)}
+
+/* TED */
+.ted{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ted .panel{display:flex;flex-direction:column;gap:8px}
+.ted .big{font-family:var(--f-display);font-size:2.4rem;font-weight:700;color:var(--accent);line-height:1}
+
+/* ADVOKATE */
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip .m{font-family:var(--f-mono);font-weight:500}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 14px;align-content:start}
+.card .letter{grid-row:span 5;font-family:var(--f-display);font-size:2.6rem;font-weight:700;line-height:1;color:var(--accent);border-right:1px solid var(--line);padding-right:10px;text-align:center}
+.card h3{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.card .obj{font-size:.86rem;color:var(--muted)}
+.card .say{background:var(--sunk);border-radius:4px;padding:10px 12px;margin-top:6px;font-size:.95rem}
+.card .avoid{font-size:.84rem;margin-top:6px}
+.card .avoid b{color:var(--stop);font-weight:600}
+.card .rec{font-size:.84rem}
+.card .rec b{color:var(--ok);font-weight:600}
+
+/* Checklist */
+.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.chk:last-child{border-bottom:0}
+.chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);flex:none}
+.chk span{min-width:0}
+.chk:has(input:checked) span{color:var(--muted);text-decoration:line-through}
+.chk-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.meter{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn{font:inherit;font-size:.88rem;font-weight:500;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:var(--r);padding:8px 14px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:hover{filter:brightness(1.08)}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.9rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-display);font-weight:600;font-size:.95rem;background:var(--sunk)}
+tr:last-child td{border-bottom:0}
+td code,.mono{font-family:var(--f-mono);font-size:.82rem}
+
+/* Builder */
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.form{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field>label,.field>.fl{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+input[type=text],select,textarea{font:inherit;font-size:.95rem;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--ink);width:100%}
+textarea{min-height:72px;resize:vertical}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 11px 4px 8px;font-size:.86rem;cursor:pointer;background:var(--surface)}
+.opt input{accent-color:var(--accent);margin:0}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.out{display:flex;flex-direction:column;gap:10px;position:sticky;top:120px}
+.out-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+pre.prompt{margin:0;font-family:var(--f-mono);font-size:.8rem;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:14px;max-height:560px;overflow:auto;color:var(--ink)}
+.flags{display:flex;flex-direction:column;gap:8px}
+
+.refs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ref{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px}
+.ref .src{font-family:var(--f-mono);font-size:.74rem;color:var(--accent)}
+.ref p{font-size:.9rem}
+.fix{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.fix>div{padding:12px 14px;border-bottom:1px solid var(--line);font-size:.9rem;min-width:0}
+.fix>div:nth-child(odd){border-right:1px solid var(--line)}
+.fix .h{background:var(--sunk);font-family:var(--f-display);font-weight:600}
+
+.milne{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+.milne ul,.proto ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.milne .cite{font-size:.86rem}
+.milne .cite i{font-style:italic}
+.proto{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.proto article{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.proto .ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.proto .pill{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px;background:var(--stop-bg);color:var(--stop)}
+.proto h4{margin:0;font-family:var(--f-display);font-weight:600;font-size:.95rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.proto .qs{display:flex;flex-direction:column;gap:6px}
+.proto .qs div{background:var(--sunk);border-radius:4px;padding:8px 10px;font-size:.9rem}
+.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--hl)}100%{box-shadow:0 0 0 3px transparent}}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;font-size:.88rem;z-index:50}
+footer{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+
+@media (max-width:980px){
+  .builder{grid-template-columns:minmax(0,1fr)}
+  .out{position:static}
+  .matrix,.refs,.proto,.milne{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:820px){
+  html{scroll-padding-top:170px}
+  .shell{grid-template-columns:minmax(0,1fr);gap:20px;padding-block:16px 48px}
+  .rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--hh,118px));z-index:15;flex-direction:row;overflow-x:auto;gap:6px;background:var(--paper);padding-block:8px;margin-inline:-16px;padding-inline:16px;border-bottom:1px solid var(--line)}
+  .rail .lbl{display:none}
+  .rail a{white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--surface)}
+  .rail a.on{border-color:var(--accent)}
+  .flow{grid-template-columns:minmax(0,1fr)}
+  .flow a{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;align-items:baseline;gap:10px}
+  .flow a:last-child{border-bottom:0}
+  .ted{grid-template-columns:minmax(0,1fr)}
+  .fix{grid-template-columns:minmax(0,1fr)}
+  .fix>div:nth-child(odd){border-right:0}
+  .row2{grid-template-columns:minmax(0,1fr)}
+  .kbd{display:none}
+  .search input[type=text]{padding-right:12px}
+}
+@media (max-width:520px){
+  .q{grid-template-columns:minmax(0,1fr) auto}
+  .q .k{grid-column:1/-1;justify-self:start}
+  .card{grid-template-columns:minmax(0,1fr)}
+  .card .letter{grid-row:auto;border-right:0;text-align:left;padding:0}
+  h2{font-size:1.5rem}
+}
+@media (prefers-reduced-motion:reduce){.flash{animation:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="top" id="top">
+  <div class="top-in">
+    <div class="brand">
+      <span class="org">CAS Solutions</span>
+      <h1>Vulnerable Witness Aide</h1>
+      <span>Scotland · ADVOKATE · TED · Special measures</span>
+    </div>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+      <input id="q" type="text" placeholder="Search questions, limbs, legislation…" autocomplete="off" aria-label="Search the aide" aria-controls="results" aria-expanded="false">
+      <span class="kbd" aria-hidden="true">/</span>
+      <div class="results" id="results" role="listbox" hidden></div>
+    </div>
+  </div>
+  <div class="checker" aria-hidden="true"></div>
+</header>
+
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="Sections">
+    <div class="lbl">Sections</div>
+    <a href="#overview"><span class="n">··</span>Overview</a>
+    <a href="#builder"><span class="n">AI</span>Prompt builder</a>
+    <a href="#s1"><span class="n">1</span>Preparation</a>
+    <a href="#s2"><span class="n">2</span>Free recall</a>
+    <a href="#s3"><span class="n">3</span>ADVOKATE</a>
+    <a href="#s4"><span class="n">4</span>Special measures</a>
+    <a href="#s5"><span class="n">5</span>Closing</a>
+    <a href="#offences"><span class="n">SC</span>Serious crime</a>
+    <a href="#policy"><span class="n">PS</span>Policy &amp; procedure</a>
+    <a href="#refs"><span class="n">§</span>References</a>
+  </nav>
+
+  <main id="main">
+    <!-- OVERVIEW -->
+    <section id="overview">
+      <div class="eyebrow">Overview</div>
+      <h2>Five stages, one continuous account</h2>
+      <p class="lead si" data-sec="Overview">An aide-memoire for planning interviews with adult and deemed vulnerable witnesses. It combines trauma-informed free recall (Tell, Explain, Describe) with the eight ADVOKATE limbs for identification evidence, and captures what the Procurator Fiscal needs to consider special measures.</p>
+      <div class="flow">
+        <a href="#s1"><span class="n">Stage 1</span><b>Preparation &amp; ground rules</b><small>Room, support, communication</small></a>
+        <a href="#s2"><span class="n">Stage 2</span><b>Free recall</b><small>Tell · Explain · Describe</small></a>
+        <a href="#s3"><span class="n">Stage 3</span><b>ADVOKATE matrix</b><small>Eight identification limbs</small></a>
+        <a href="#s4"><span class="n">Stage 4</span><b>Vulnerability &amp; measures</b><small>Fears, reactions, notice data</small></a>
+        <a href="#s5"><span class="n">Stage 5</span><b>Closing</b><small>Victim Care Card, next steps</small></a>
+      </div>
+      <div class="note ok si" data-sec="Overview"><span class="tag">PEACE</span><p>The stages follow the PEACE model used by Police Scotland: <b>Plan and prepare</b> and <b>Engage and explain</b> (stage 1), <b>Account</b> (stages 2 to 4), <b>Closure</b> (stage 5), then <b>Evaluate</b> the interview afterwards.</p></div>
+      <div class="note stop si" data-sec="Overview"><span class="tag">Child witness</span><p>Witnesses under 18 should be interviewed through the <b>Scottish Child Interview Model</b> (Joint Investigative Interview) by trained police and social work interviewers. Do not use this aide as a substitute for that process.</p></div>
+      <div class="note warn si" data-sec="Overview"><span class="tag">Unofficial</span><p>This is a planning aid, not force policy. Check wording and legal references against current Police Scotland SOPs and COPFS guidance before operational use. Keep personal data out of any AI tool that is not approved for it.</p></div>
+    </section>
+
+    <!-- BUILDER -->
+    <section id="builder">
+      <div class="eyebrow">AI prompt builder</div>
+      <h2>Generate a case-specific question plan</h2>
+      <p class="lead si" data-sec="Prompt builder">Pick the witness profile, support needs and offence. The prompt updates as you go and adds the right legal flags. Copy it into an approved AI assistant, then review every question it returns before use.</p>
+      <div class="note ok"><span class="tag">Example</span><p>Example values are loaded so you can see a finished prompt. <button class="btn ghost" id="clearForm" type="button" style="padding:3px 10px;margin-left:6px">Clear form</button></p></div>
+      <div class="builder">
+        <form class="form panel" id="pform" autocomplete="off">
+          <div class="row2">
+            <div class="field">
+              <label for="f-age">Age</label>
+              <input id="f-age" type="text" inputmode="numeric" maxlength="3" placeholder="e.g. 34">
+            </div>
+            <div class="field">
+              <label for="f-ident">Identification issue</label>
+              <select id="f-ident">
+                <option value="stranger">Stranger identification</option>
+                <option value="known">Suspect known to witness</option>
+                <option value="none">No identification issue</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <span class="fl" id="vul-l">Nature of vulnerability</span>
+            <div class="opts" role="group" aria-labelledby="vul-l" id="f-vul">
+              <label class="opt"><input type="checkbox" id="v1" value="a learning disability">Learning disability</label>
+              <label class="opt"><input type="checkbox" id="v2" value="a mental health condition">Mental health condition</label>
+              <label class="opt"><input type="checkbox" id="v3" value="acute distress or trauma">Acute distress / trauma</label>
+              <label class="opt"><input type="checkbox" id="v4" value="physical frailty">Physical frailty</label>
+              <label class="opt"><input type="checkbox" id="v5" value="autism or other neurodivergence">Autism / neurodivergence</label>
+              <label class="opt"><input type="checkbox" id="v6" value="a communication or speech difficulty">Communication difficulty</label>
+              <label class="opt"><input type="checkbox" id="v7" value="a hearing impairment">Hearing impairment</label>
+              <label class="opt"><input type="checkbox" id="v8" value="fear or intimidation linked to the accused">Fear / intimidation</label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-vul-other">Other vulnerability detail</label>
+            <input id="f-vul-other" type="text" placeholder="e.g. memory difficulties after head injury">
+          </div>
+          <div class="field">
+            <span class="fl" id="req-l">Special requirements</span>
+            <div class="opts" role="group" aria-labelledby="req-l" id="f-req">
+              <label class="opt"><input type="checkbox" id="r1" value="an Appropriate Adult">Appropriate Adult</label>
+              <label class="opt"><input type="checkbox" id="r2" value="a BSL interpreter">BSL interpreter</label>
+              <label class="opt"><input type="checkbox" id="r3" value="a spoken-language interpreter">Language interpreter</label>
+              <label class="opt"><input type="checkbox" id="r4" value="visual aids (diagrams, photos of the location, pictograms)">Visual aids</label>
+              <label class="opt"><input type="checkbox" id="r5" value="frequent breaks">Frequent breaks</label>
+              <label class="opt"><input type="checkbox" id="r6" value="a support person present (not a witness in the case)">Support person</label>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="f-off">Offence type</label>
+              <select id="f-off">
+                <option value="Domestic Abuse">Domestic abuse</option>
+                <option value="Stalking">Stalking</option>
+                <option value="Serious Assault">Serious assault</option>
+                <option value="Sexual Crime">Sexual crime</option>
+                <option value="Human Trafficking">Human trafficking</option>
+                <option value="Robbery">Robbery</option>
+                <option value="Hate Crime">Hate crime</option>
+                <option value="Murder">Murder (witness)</option>
+                <option value="Attempted Murder">Attempted murder</option>
+                <option value="Kidnap">Kidnap / abduction</option>
+                <option value="Extortion">Extortion</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-lang">Interpreter language</label>
+              <input id="f-lang" type="text" placeholder="e.g. Polish">
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-ctx">Additional context (no names or identifiers)</label>
+            <textarea id="f-ctx" placeholder="e.g. Incident at night on a residential street; witness gave a brief description to call handler."></textarea>
+          </div>
+        </form>
+        <div class="out">
+          <div class="out-head">
+            <h3>Generated prompt</h3>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="meter" id="pcount">0 words</span>
+              <button class="btn" id="copyPrompt" type="button">Copy prompt</button>
+            </div>
+          </div>
+          <div class="flags" id="flags" aria-live="polite"></div>
+          <pre class="prompt" id="prompt" tabindex="0" aria-label="Generated AI prompt"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- S1 -->
+    <section id="s1">
+      <div class="eyebrow">Stage 1</div>
+      <h2>Preparation, environment &amp; ground rules</h2>
+      <p class="lead si" data-sec="Stage 1 · Preparation">Set up the conditions for a fair, accessible interview before the account begins. Explain ground rules in plain language and check they have been understood.</p>
+      <div class="chk-head"><h3>Pre-interview checklist</h3><div style="display:flex;gap:10px;align-items:center"><span class="meter" id="chkMeter">0 / 0</span><button class="btn ghost" id="chkReset" type="button" style="padding:4px 10px">Reset</button></div></div>
+      <div class="qlist" id="checklist"></div>
+      <h3>Ground rules to say</h3>
+      <div class="qlist" id="rules"></div>
+    </section>
+
+    <!-- S2 -->
+    <section id="s2">
+      <div class="eyebrow">Stage 2</div>
+      <h2>Cognitive free recall</h2>
+      <p class="lead si" data-sec="Stage 2 · Free recall">Get the witness's own uninterrupted account first. Use open TED prompts, allow silence, and do not introduce details the witness has not given.</p>
+      <div class="ted">
+        <div class="panel si" data-sec="Stage 2 · Free recall"><span class="big">T</span><h3>Tell me</h3><p>Opens the account. Use at the start and to move to a new topic.</p></div>
+        <div class="panel si" data-sec="Stage 2 · Free recall"><span class="big">E</span><h3>Explain to me</h3><p>Expands on something the witness has already said, in their words.</p></div>
+        <div class="panel si" data-sec="Stage 2 · Free recall"><span class="big">D</span><h3>Describe for me</h3><p>Draws out sensory and physical detail of a person, place or object.</p></div>
+      </div>
+      <div class="qlist" id="recall"></div>
+      <h3>Phrasing check</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Type</th><th>Example</th><th>Use</th></tr></thead>
+        <tbody id="phrasing"></tbody>
+      </table></div>
+
+      <h3>Recall aids: helping the witness remember</h3>
+      <p class="lead si" data-sec="Stage 2 · Recall aids">Cognitive Interview techniques to use when the free account runs dry. Introduce one at a time, explain why, and return to open questions afterwards. The notes show how to adapt each one for vulnerable witnesses.</p>
+      <div class="qlist" id="recallAids"></div>
+
+      <div class="panel milne si" id="milne" data-sec="Stage 2 · Professor Becky Milne">
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="eyebrow">Research basis</div>
+          <h3>Professor Becky Milne and the Cognitive Interview</h3>
+          <p>Professor Becky Milne, Professor of Forensic Psychology at the University of Portsmouth, is one of the leading researchers on interviewing witnesses and victims. Her work tested the Cognitive Interview with vulnerable groups, including adults with learning disabilities, and helped shape national practice on interviewing vulnerable and intimidated witnesses.</p>
+          <ul>
+            <li>The Cognitive Interview reliably increases the amount of correct detail recalled, with little or no rise in errors.</li>
+            <li>Adults with mild learning disabilities recall more with the Cognitive Interview, but remain more open to leading and misleading questions. Question style matters as much as technique.</li>
+            <li>Techniques should be simplified for vulnerable witnesses. Context reinstatement and "report everything" carry most of the benefit; "change perspective" is generally left out.</li>
+            <li>Co-developed <i>Achieving Best Evidence</i> guidance on vulnerable and intimidated witnesses, and contributed to the tiered PEACE interviewing framework.</li>
+          </ul>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+          <h4 style="margin:0;font-family:var(--f-display);font-size:.95rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Key works</h4>
+          <p class="cite">Milne, R. &amp; Bull, R. (1999). <i>Investigative Interviewing: Psychology and Practice.</i> Chichester: Wiley. Later editions follow.</p>
+          <p class="cite">Köhnken, G., Milne, R., Memon, A. &amp; Bull, R. (1999). The cognitive interview: a meta-analysis. <i>Psychology, Crime &amp; Law</i>, 5, 3–27.</p>
+          <p class="cite">Milne, R., Clare, I. C. H. &amp; Bull, R. (1999). Using the cognitive interview with adults with mild learning disabilities. <i>Psychology, Crime &amp; Law</i>, 5, 81–99.</p>
+          <p class="cite">Milne, R. et al. (2002). Interrogative suggestibility among witnesses with mild intellectual disabilities. <i>Journal of Applied Research in Intellectual Disabilities.</i></p>
+          <p class="cite">Clarke, J. et al. (2013). How effective is the cognitive interview when used with adults with intellectual disabilities specifically with conversation recall? <i>Journal of Applied Research in Intellectual Disabilities.</i> University of Portsmouth research.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section id="s3">
+      <div class="eyebrow">Stage 3</div>
+      <h2>The ADVOKATE matrix</h2>
+      <p class="lead si" data-sec="Stage 3 · ADVOKATE">Eight limbs that test the quality of an identification. Cover each one with open questions after free recall, and record the answer in the witness's own words so the evidence holds up under cross-examination.</p>
+      <div class="filters" id="filters" role="group" aria-label="Filter limbs"></div>
+      <div class="matrix" id="matrix"></div>
+    </section>
+
+    <!-- S4 -->
+    <section id="s4">
+      <div class="eyebrow">Stage 4</div>
+      <h2>Vulnerability &amp; special measures</h2>
+      <p class="lead si" data-sec="Stage 4 · Special measures">Record fears and observed reactions accurately. This material supports the Procurator Fiscal's decision on a vulnerable witness notice or application. The PF and the court decide which measures apply.</p>
+      <div class="qlist" id="measuresQ"></div>
+      <h3>Special measures under the Criminal Procedure (Scotland) Act 1995</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Measure</th><th>Section</th><th>What it means for the witness</th><th>Standard?</th></tr></thead>
+        <tbody id="measures"></tbody>
+      </table></div>
+      <div class="note warn si" data-sec="Stage 4 · Special measures"><span class="tag">Deemed vulnerable</span><p>Complainers in sexual offences, human trafficking, stalking and domestic abuse cases are deemed vulnerable under s271(1) and are entitled to the standard special measures. Confirm the current position with the PF for each case.</p></div>
+    </section>
+
+    <!-- S5 -->
+    <section id="s5">
+      <div class="eyebrow">Stage 5</div>
+      <h2>Closing &amp; reassurance</h2>
+      <p class="lead si" data-sec="Stage 5 · Closing">End on a neutral, supportive footing. Explain what happens next without predicting outcomes or making promises about court.</p>
+      <div class="qlist" id="closing"></div>
+    </section>
+
+    <!-- OFFENCES -->
+    <section id="offences">
+      <div class="eyebrow">Serious crime</div>
+      <h2>Murder, attempted murder, kidnap &amp; extortion</h2>
+      <p class="lead si" data-sec="Serious crime">Extra protocols for major and life-at-risk investigations. In each case the Senior Investigating Officer's witness interview strategy takes priority over this aide.</p>
+      <div class="proto" id="proto"></div>
+    </section>
+
+    <!-- POLICY -->
+    <section id="policy">
+      <div class="eyebrow">Policy &amp; procedure</div>
+      <h2>ACPOS, RIPSA and Police Scotland</h2>
+      <p class="lead si" data-sec="Policy &amp; procedure">Where each framework sits today and what it means for a witness interview.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Framework</th><th>Status</th><th>What it means for the interview</th></tr></thead>
+        <tbody id="policyRows"></tbody>
+      </table></div>
+      <div class="note stop si" data-sec="Policy &amp; procedure · RIPSA"><span class="tag">RIPSA risk</span><p>Never ask a witness to go back and find something out, keep a conversation going, or record contact for you. Doing so may make them a <b>covert human intelligence source</b> under s1(7) RIPSA, which needs authorisation under s7. Vulnerable people should be used as a source only in the most exceptional circumstances.</p></div>
+    </section>
+
+    <!-- REFS -->
+    <section id="refs">
+      <div class="eyebrow">References</div>
+      <h2>Legal and policy basis</h2>
+      <div class="refs" id="reflist"></div>
+      <h3>Corrections to the source framework</h3>
+      <p class="lead si" data-sec="References">The original text had some references that needed tightening. These are reflected throughout this aide.</p>
+      <div class="fix" id="fixes"></div>
+      <footer>CAS Solutions · Vulnerable Witness Aide. Unofficial planning aid. Not endorsed by Police Scotland or COPFS. Last compiled 28 September 2026.</footer>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Content ---------- */
+var CHECKLIST = [
+  "Quiet, private room with minimal distractions; seating at an angle rather than face-on",
+  "Visual recording equipment tested, if the interview is being recorded",
+  "Witness's communication needs identified (literacy, language, sensory, cognitive)",
+  "Appropriate Adult arranged where the witness may be unable to understand or communicate effectively because of a mental disorder",
+  "BSL or spoken-language interpreter booked and briefed on non-leading practice",
+  "Intermediary or communication support considered for significant communication difficulty",
+  "Breaks agreed in advance, with a signal the witness can use to stop",
+  "Any support person is not a witness in the case",
+  "First account / initial description (call handler, radio, notebook) located for the E limb",
+  "Witness has not been shown images of the suspect or told about the suspect's appearance",
+  "Witness is not being tasked to obtain information or maintain contact (CHIS risk under RIPSA)",
+  "Serious crime: SIO's witness interview strategy read, and interview adviser consulted where required"
+];
+var RULES = [
+  ["Say","We are going to talk about what happened. If I use a word you don't understand, please tell me.","Checks comprehension and gives permission to interrupt."],
+  ["Say","If you don't know the answer, it is fine to say 'I don't know'. Please don't guess.","Reduces guessing and compliance."],
+  ["Say","If I get something wrong, please tell me. You know what happened and I wasn't there.","Encourages correction of the interviewer."],
+  ["Say","If I ask the same question twice, it doesn't mean your first answer was wrong.","Stops the witness changing answers to please."],
+  ["Say","You can ask for a break at any time. Just tell me, or use the card we agreed.","Supports wellbeing and consistency."],
+  ["Check","Ask the witness to explain one ground rule back in their own words.","Confirms the rules were understood."]
+];
+var RECALL = [
+  ["Tell","Tell me everything you can remember about what happened, from the start. Take your time.","Initial free narrative. Do not interrupt."],
+  ["Tell","Tell me what happened just before that.","Fills gaps at the start of the account."],
+  ["Explain","You said [witness's words]. Explain to me what you meant by that.","Uses only the witness's own words."],
+  ["Explain","Explain to me what happened next.","Moves the account forward without suggestion."],
+  ["Describe","Describe for me the person you saw, from their head to their feet.","Top-to-toe description. Record verbatim."],
+  ["Describe","Describe for me the place where this happened.","Context reinstatement aids recall."],
+  ["Describe","Describe for me anything you heard, smelled or felt at that moment.","Sensory cues can unlock further detail."],
+  ["Note","Record pauses, distress and any change in the witness's presentation during recall.","Supports stage 4 and any later application."]
+];
+var PHRASING = [
+  ["Open (TED)","Tell me about the man you saw.","Preferred throughout"],
+  ["Specific closed (5WH)","What colour was his jacket?","Only after free recall, to clarify detail already mentioned"],
+  ["Forced choice","Was the jacket black or blue?","Avoid. Witness may pick an option that is wrong"],
+  ["Leading","He had a black jacket, didn't he?","Never. Contaminates the account"],
+  ["Multiple","What was he wearing and where did he go?","Avoid. Ask one thing at a time"]
+];
+var ADVOKATE = [
+  {l:"A",name:"Amount of time",obj:"How long the witness had the person under observation.",
+   say:"From the moment you first noticed the person, tell me what happened while you were watching them.",
+   avoid:"'You saw him for a few seconds, right?'",rec:"Duration in the witness's words, and whether the view was continuous or broken."},
+  {l:"D",name:"Distance",obj:"How far away the person was.",
+   say:"To help me picture it, can you point to something in this room that shows how far away the person was?",
+   avoid:"'Was he about ten metres away?'",rec:"Distance shown against a fixed object; measure it afterwards and note both."},
+  {l:"V",name:"Visibility",obj:"Lighting and conditions at the time.",
+   say:"Describe the light at that moment. How clearly could you see their face?",
+   avoid:"'It was dark, wasn't it?'",rec:"Light sources, weather, and any sight or vision issues (glasses worn or not)."},
+  {l:"O",name:"Obstructions",obj:"Anything blocking the view, even briefly.",
+   say:"Tell me about anything that was between you and that person, even for a moment.",
+   avoid:"'Did the car block your view?'",rec:"Type and duration of each obstruction, including headwear or face coverings."},
+  {l:"K",name:"Known or seen before",obj:"Whether the witness knew or had seen the person before.",
+   say:"Have you seen this person before that day? Tell me about when and where.",
+   avoid:"'You've seen him in the shop before, haven't you?'",rec:"How often, when last, and in what circumstances. If known, how they know the name."},
+  {l:"A",name:"Any reason to remember",obj:"What made the person or moment stand out.",
+   say:"What was it that made you notice that person at that moment?",
+   avoid:"'You noticed him because he was shouting?'",rec:"The reason in the witness's words, e.g. distinctive feature or behaviour."},
+  {l:"T",name:"Time lapse",obj:"Time between the sighting and any later identification or description.",
+   say:"How long ago did this happen? Has anything reminded you of it since?",
+   avoid:"'Your memory is still clear, isn't it?'",rec:"Dates and times of sighting, first description and any identification procedure."},
+  {l:"E",name:"Errors or discrepancies",obj:"Differences between the first description and the suspect's actual appearance.",
+   say:"Earlier you gave a short description. Tell me again in your own words what the person looked like.",
+   avoid:"'You said he was tall, but he's actually 5ft 6, so which is it?'",rec:"Compare against the first account after interview. Do not put discrepancies to the witness in a way that suggests the answer."}
+];
+var MEASURES_Q = [
+  ["Ask","How do you feel when you think about giving evidence about this?","Open question about fears. Record the answer verbatim."],
+  ["Ask","Is there anything that worries you about being in the same place as the person you've told me about?","Captures fear of the accused without naming them."],
+  ["Ask","There are different ways people can give evidence, such as from another room by video link, behind a screen, or with a supporter. Is there anything that would help you give your best evidence?","Describe all options neutrally. Do not promise any measure."],
+  ["Record","Physical and emotional reactions observed (e.g. crying, trembling, rapid breathing, loss of concentration, fatigue), with times.","Factual observations, not diagnosis."],
+  ["Record","Any threats, intimidation or contact from the accused or associates.","Relevant to fear and to s271(2) considerations."],
+  ["Record","Communication needs likely to affect evidence at court (interpreter, intermediary, breaks).","Supports the PF's application."],
+  ["Record","Witness's stated preference on special measures, in their words.","The witness's views must be taken into account."]
+];
+var MEASURES = [
+  ["Live television link","s271J","Gives evidence from another room, usually a remote site or witness suite","Yes"],
+  ["Screen","s271K","Does not see the accused while giving evidence in the courtroom","Yes"],
+  ["Supporter","s271L","A named person sits with the witness while they give evidence","Yes"],
+  ["Evidence by commissioner","s271I","Evidence taken in advance and recorded, often long before trial","Default for specified child witnesses (2019 Act); otherwise on application"],
+  ["Prior statement as evidence in chief","s271M","A recorded statement (e.g. visually recorded interview) stands as main evidence","On application"],
+  ["Excluding the public","s271HB","Public cleared from court while the witness gives evidence; bona fide press may remain","On application"]
+];
+var CLOSING = [
+  ["Say","Thank you for talking to me today. Is there anything else you want to tell me that I haven't asked about?","Final open invitation."],
+  ["Say","Is there anything you want to ask me?","Lets the witness raise concerns."],
+  ["Give","Here is your Victim Care Card. It has your crime reference number, the officer dealing, and how you'll be kept updated.","Required for victims; explain each part."],
+  ["Say","Victim Support Scotland can offer free, confidential support. Their details are on the card.","Offer, don't pressure."],
+  ["Say","I can't tell you what the outcome will be, but I will explain what happens next and keep you updated.","No promises about court or charges."],
+  ["Check","Confirm how and when the witness prefers to be contacted, and any safety concerns about contact.","Particularly important in domestic abuse and stalking."],
+  ["Check","Consider immediate safety planning and referral (e.g. MARAC, ASSIST) where risk is identified.","Record referrals made."]
+];
+var REFS = [
+  ["Criminal Procedure (Scotland) Act 1995, s271","Defines child and vulnerable witnesses, including deemed vulnerable complainers."],
+  ["CP(S)A 1995, ss271A–271M","Notices, applications and the special measures themselves."],
+  ["Vulnerable Witnesses (Scotland) Act 2004","Introduced the special measures framework into the 1995 Act."],
+  ["Victims and Witnesses (Scotland) Act 2014","Deemed vulnerable categories; right to information; Standards of Service."],
+  ["Vulnerable Witnesses (Criminal Evidence) (Scotland) Act 2019","Pre-recording of evidence (evidence by commissioner) as the norm for specified child witnesses."],
+  ["Criminal Justice (Scotland) Act 2016, s42","Statutory basis for Appropriate Adult support (suspects); national guidance extends support to victims and witnesses."],
+  ["Domestic Abuse (Scotland) Act 2018","Course-of-conduct offence; complainers deemed vulnerable."],
+  ["R v Turnbull [1977] QB 224","English case from which ADVOKATE is derived; used in Scotland as investigative good practice."],
+  ["Scottish Child Interview Model","Joint Investigative Interviews for children, by trained police and social work staff."],
+  ["Victim Care Card / Victim Support Scotland","Police Scotland information for victims; independent support service."],
+  ["Regulation of Investigatory Powers (Scotland) Act 2000","CHIS and directed surveillance authorisations; relevant when a witness is asked to gather information or record contact."],
+  ["Milne & Bull (1999); Köhnken, Milne, Memon & Bull (1999)","Cognitive Interview research underpinning the recall aids in stage 2."],
+  ["Achieving Best Evidence (Ministry of Justice)","England and Wales guidance on vulnerable and intimidated witnesses, co-developed by Milne; widely used as a research reference."]
+];
+var RECALL_AIDS = [
+  ["Report all","Tell me everything you remember, even small things, or things you think aren't important. Don't leave anything out, but please don't guess.","Core CI instruction (Milne). For vulnerable witnesses, repeat 'don't guess' so it doesn't feel like pressure to fill gaps."],
+  ["Context","Before you tell me, I'd like you to think back to that place. Take your time. Think about where you were, what you could see, what you could hear, how you were feeling. Tell me when you're ready.","Mental reinstatement of context. Speak slowly and pause. Leave out the emotional part if the witness is highly distressed."],
+  ["Sketch","Could you draw me a rough picture of where you were? Mark where you were and where the other people were. Talk me through it as you draw.","Sketch plan helps witnesses with limited verbal skills and supports the D and O limbs. Keep the drawing as a production."],
+  ["Focus","Some people find it easier to remember if they close their eyes, or look at a blank wall. You don't have to, but you're welcome to.","Focused retrieval. Always optional; many trauma survivors will not want to close their eyes."],
+  ["Pause","[Wait silently for several seconds after an answer before speaking.]","Pauses let the witness add detail. Use minimal prompts such as 'Mm-hm' or 'Go on'. Do not rush to the next question."],
+  ["Control","You were there and I wasn't, so you are the expert on what happened. I'll just listen.","Transfer of control. Reduces the tendency of vulnerable witnesses to follow the interviewer's lead."],
+  ["Order","Sometimes it helps to think about it in a different way. Tell me what happened, starting from the end and working back.","Change order. Use with care: it adds cognitive load and may confuse witnesses with learning disabilities or acute trauma. Skip if the witness struggles."],
+  ["Names","If a name or number is on the tip of your tongue, don't worry. Sometimes it comes back if you think about the first sound or letter.","Retrieval aid for names and registrations. Never offer candidate letters or names yourself."],
+  ["Senses","You told me about the car. Describe for me anything you heard or smelled at that point.","Probe each sense for a topic the witness has already raised. Stay within their account."],
+  ["Avoid","Do not use 'change perspective' (asking the witness to describe events from someone else's point of view).","Generally omitted with vulnerable witnesses in national guidance, because it can be misunderstood as an invitation to speculate."]
+];
+var PROTOCOLS = [
+  {name:"Murder (witness)",pill:"Major investigation",points:[
+    "Common law crime tried in the High Court. The SIO within a Major Investigation Team sets the witness interview strategy and grades significant witnesses.",
+    "Significant witnesses: plan a visually recorded interview by suitably trained interviewers and consult an interview adviser.",
+    "Bereaved relatives are supported by a Family Liaison Officer. The SIO decides whether the FLO also takes their statement.",
+    "Record the first account word for word with the time. If the witness later becomes unavailable, an earlier statement may be admissible (CP(S)A 1995 s259); a witness can also adopt a prior statement (s260).",
+    "Where the witness faces a threat, follow threat-to-life procedures and consider referral to the UK Protected Persons Service (SOCPA 2005 ss82–94).",
+    "Fear or distress may make an adult witness vulnerable under s271(1)(b). Record it for the PF."],
+   qs:["Tell me everything that happened, from the moment you first noticed something was wrong.","Describe for me everyone who was there. Start with whoever you remember best.","Tell me about anything that was said, in the words used, as best you remember.","What happened after it was over? Tell me where people went."]},
+  {name:"Attempted murder",pill:"Major investigation",points:[
+    "Often run under the same SIO and MIT structure as murder. Follow the witness interview strategy.",
+    "Victim in hospital: check fitness with the treating clinician before interviewing. Keep a first account short and focused.",
+    "If there is a risk the victim may not survive, get an account urgently and consider visual recording. It may later be admissible under s259.",
+    "Physical injury, pain and medication affect recall. Plan short sessions and record the medical position at the time.",
+    "Account of the violence, any weapon and any words spoken is central to proving intent or wicked recklessness."],
+   qs:["When you're ready, tell me what happened.","Describe for me what the person had in their hands, if anything.","Tell me about anything the person said before, during or after.","Explain to me how it ended."]},
+  {name:"Kidnap / abduction",pill:"Life at risk",points:[
+    "Preservation of life comes first. The SIO directs all witness contact, supported by trained negotiators and kidnap specialists. Information may be time-critical.",
+    "Early accounts from family and witnesses focus on proof of life, demands, deadlines, how contact is made and any descriptions.",
+    "Recording calls from the kidnappers with a family member's consent may need a directed surveillance authorisation under RIPSA (see Investigatory Powers Act 2016 s44). Get authority through the SIO first.",
+    "Do not ask a family member to make or continue contact on police instruction without authorisation. This may create a CHIS relationship under RIPSA.",
+    "Keep information tightly controlled. Explain to witnesses why they must not share details or speak to the media.",
+    "After release, put medical care, welfare and forensic recovery before a full interview. Released victims are often severely traumatised."],
+   qs:["Tell me everything about the last time you saw or heard from them.","Tell me about every contact you've had since, in the order it happened.","Describe for me the voice of the person you spoke to.","(Released victim) Describe for me the places you were kept, using every sense you can."]},
+  {name:"Extortion",pill:"RIPSA check",points:[
+    "Common law crime in Scotland, including threats to publish private images (sextortion). Victims are often ashamed or frightened and slow to disclose.",
+    "Assess the victim's welfare and safety at the start. Sextortion victims can be at acute risk and may need immediate safeguarding.",
+    "Preserve evidence: messages, call logs, usernames, payment requests and account details. Advise the victim not to delete anything, and follow current force guidance on payment.",
+    "If police want the victim to keep talking to the offender, treat it as a possible CHIS or directed surveillance situation under RIPSA and seek authorisation.",
+    "Capture demands, threats and deadlines in the victim's exact words."],
+   qs:["Tell me how this started, from the first contact.","Tell me exactly what they asked you for, and what they said would happen.","Explain to me how they've been in touch with you.","Is there anything else they have said that worries you?"]}
+];
+var POLICY = [
+  ["ACPOS (Association of Chief Police Officers in Scotland)","Legacy. Replaced when Police Scotland was formed on 1 April 2013.","Its manuals (for example on murder investigation and investigative interviewing) are historical. Cite current Police Scotland SOPs and national guidance instead."],
+  ["Police Scotland investigative interviewing","Current","Based on the PEACE model with tiered interviewer training. Serious-crime interviews use specialist interviewers and interview advisers."],
+  ["Police Scotland major investigation","Current","Murder and other major crimes are led by an SIO, usually within a Major Investigation Team, with a written witness interview strategy."],
+  ["RIPSA 2000, s1(7) and s7","Current","Defines a covert human intelligence source (CHIS) and requires authorisation. A witness tasked to gather information or keep up contact may become one."],
+  ["RIPSA 2000, s6","Current","Directed surveillance authorisation, including some recording of communications with one party's consent."],
+  ["CHIS Code of Practice (Scotland)","Current","Vulnerable people and juveniles should be authorised as sources only in exceptional circumstances, with enhanced safeguards."],
+  ["Investigatory Powers Act 2016, s44","Current (UK-wide)","Interception with the consent of a sender or recipient is lawful where a surveillance authorisation, including one under RIPSA, is in place."],
+  ["COPFS","Current","Directs the investigation of serious crime, precognoses witnesses and applies for special measures. Report special-measures information early."],
+  ["Victims and Witnesses (Scotland) Act 2014","Current","Rights to information, Standards of Service, and deemed vulnerable categories."],
+  ["Criminal Procedure (Scotland) Act 1995, ss259–260","Current","Hearsay where a witness is unavailable, and adoption of prior statements. Early, accurate statements matter."]
+];
+var FIXES = [
+  ["Source said","Corrected to"],
+  ["Section 271 governs the Appropriate Adult requirement.","Section 271 defines vulnerable witnesses. Appropriate Adult support rests on the 2016 Act and national guidance."],
+  ["ADVOKATE maps to 'Turnbull / Lord Advocate Guidelines'.","Turnbull is English case law. ADVOKATE is good practice in Scotland, not a Lord Advocate's guideline."],
+  ["Suggested asking the witness about a screen or video link only.","All options are described neutrally, with no promise. The PF and court decide."],
+  ["No reference to child witnesses.","Under-18s go through the Scottish Child Interview Model; this aide is for adults."],
+  ["'Vulnerable Witness Notice' presented as always available.","Notice for standard measures; an application is needed for others. Confirm with the PF."],
+  ["ACPOS standards presented as current.","ACPOS was replaced by Police Scotland in April 2013. Its standards are legacy; current SOPs apply."]
+];
+
+/* ---------- Helpers ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+var toastT;
+function toast(msg){var t=$("toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true;},1800);}
+
+function copyText(text,btn){
+  function ok(){toast("Copied");if(btn){var o=btn.textContent;btn.textContent="Copied";btn.classList.add("done");setTimeout(function(){btn.textContent=o;btn.classList.remove("done");},1400);}}
+  function fallback(){
+    var ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+    var done=false;try{done=document.execCommand("copy");}catch(e){done=false;}
+    document.body.removeChild(ta);
+    if(done)ok();else toast("Copy blocked. Select the text and copy it manually");
+  }
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok,fallback);}
+    else fallback();
+  }catch(e){fallback();}
+}
+
+function qRow(kind,say,why,sec){
+  var r=el("div","q si");r.setAttribute("data-sec",sec);
+  var inv=/^(Note|Record|Check|Give)$/.test(kind);
+  r.innerHTML='<span class="k'+(inv?" inv":"")+'">'+esc(kind)+'</span><div class="t"><div class="say">'+esc(say)+'</div>'+(why?'<div class="why">'+esc(why)+'</div>':'')+'</div>';
+  var b=el("button","copy","Copy");b.type="button";b.setAttribute("aria-label","Copy: "+say.slice(0,60));
+  b.addEventListener("click",function(){copyText(say,b);});
+  r.appendChild(b);return r;
+}
+function fillList(id,rows,sec){var c=$(id);rows.forEach(function(r){c.appendChild(qRow(r[0],r[1],r[2],sec));});}
+
+/* ---------- Render static data ---------- */
+fillList("rules",RULES,"Stage 1 · Ground rules");
+fillList("recall",RECALL,"Stage 2 · Free recall");
+fillList("measuresQ",MEASURES_Q,"Stage 4 · Special measures");
+fillList("closing",CLOSING,"Stage 5 · Closing");
+fillList("recallAids",RECALL_AIDS,"Stage 2 · Recall aids");
+PROTOCOLS.forEach(function(pr,i){
+  var a=el("article","si");a.id="proto-"+i;a.setAttribute("data-sec","Serious crime · "+pr.name);
+  var h='<div class="ph"><h3>'+esc(pr.name)+'</h3><span class="pill">'+esc(pr.pill)+'</span></div><h4>Protocol</h4><ul>';
+  pr.points.forEach(function(x){h+="<li>"+esc(x)+"</li>";});
+  h+='</ul><h4>Opening questions</h4><div class="qs">';
+  pr.qs.forEach(function(x){h+="<div>"+esc(x)+"</div>";});
+  a.innerHTML=h+"</div>";$("proto").appendChild(a);
+});
+POLICY.forEach(function(r){var tr=el("tr","si");tr.setAttribute("data-sec","Policy & procedure");tr.innerHTML="<td><b>"+esc(r[0])+"</b></td><td>"+esc(r[1])+"</td><td>"+esc(r[2])+"</td>";$("policyRows").appendChild(tr);});
+
+PHRASING.forEach(function(p){var tr=el("tr","si");tr.setAttribute("data-sec","Stage 2 · Phrasing");tr.innerHTML="<td><b>"+esc(p[0])+"</b></td><td>"+esc(p[1])+"</td><td>"+esc(p[2])+"</td>";$("phrasing").appendChild(tr);});
+MEASURES.forEach(function(m){var tr=el("tr","si");tr.setAttribute("data-sec","Stage 4 · Special measures");tr.innerHTML="<td><b>"+esc(m[0])+"</b></td><td><code>"+esc(m[1])+"</code></td><td>"+esc(m[2])+"</td><td>"+esc(m[3])+"</td>";$("measures").appendChild(tr);});
+REFS.forEach(function(r){var d=el("div","ref si");d.setAttribute("data-sec","References");d.innerHTML='<span class="src">'+esc(r[0])+'</span><p>'+esc(r[1])+'</p>';$("reflist").appendChild(d);});
+FIXES.forEach(function(f,i){
+  var a=el("div",i===0?"h":"si",esc(f[0])),b=el("div",i===0?"h":"si",esc(f[1]));
+  if(i){a.setAttribute("data-sec","References · Corrections");b.setAttribute("data-sec","References · Corrections");}
+  $("fixes").appendChild(a);$("fixes").appendChild(b);
+});
+
+/* ADVOKATE */
+ADVOKATE.forEach(function(a,i){
+  var c=el("article","card si");c.id="limb-"+i;c.setAttribute("data-sec","Stage 3 · ADVOKATE");c.setAttribute("data-limb",String(i));
+  c.innerHTML='<div class="letter" aria-hidden="true">'+a.l+'</div>'+
+    '<h3><span>'+esc(a.name)+'</span></h3>'+
+    '<div class="obj">'+esc(a.obj)+'</div>'+
+    '<div class="say">'+esc(a.say)+'</div>'+
+    '<div class="avoid"><b>Avoid:</b> '+esc(a.avoid)+'</div>'+
+    '<div class="rec"><b>Record:</b> '+esc(a.rec)+'</div>';
+  var b=el("button","copy","Copy");b.type="button";b.setAttribute("aria-label","Copy "+a.name+" question");
+  b.addEventListener("click",function(){copyText(a.say,b);});
+  c.querySelector("h3").appendChild(b);
+  $("matrix").appendChild(c);
+});
+var filters=$("filters");
+function mkChip(label,idx){
+  var b=el("button","chip",label);b.type="button";b.setAttribute("aria-pressed",idx===-1?"true":"false");b.setAttribute("data-idx",String(idx));
+  b.addEventListener("click",function(){
+    Array.prototype.forEach.call(filters.children,function(x){x.setAttribute("aria-pressed","false");});
+    b.setAttribute("aria-pressed","true");
+    Array.prototype.forEach.call($("matrix").children,function(card){card.hidden=!(idx===-1||card.getAttribute("data-limb")===String(idx));});
+  });
+  filters.appendChild(b);
+}
+mkChip("All eight",-1);
+ADVOKATE.forEach(function(a,i){mkChip('<span class="m">'+a.l+'</span> '+esc(a.name),i);});
+
+/* Checklist with per-viewer storage */
+var KEY="vwia-checklist-v1",saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){saved={};}
+CHECKLIST.forEach(function(text,i){
+  var lab=el("label","chk si");lab.setAttribute("data-sec","Stage 1 · Checklist");
+  var cb=document.createElement("input");cb.type="checkbox";cb.id="chk-"+i;cb.checked=!!saved[i];
+  cb.addEventListener("change",function(){saved[i]=cb.checked;try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}updMeter();});
+  var sp=el("span",null,esc(text));
+  lab.appendChild(cb);lab.appendChild(sp);$("checklist").appendChild(lab);
+});
+function updMeter(){var all=$("checklist").querySelectorAll("input"),n=0;Array.prototype.forEach.call(all,function(c){if(c.checked)n++;});$("chkMeter").textContent=n+" / "+all.length+" done";}
+$("chkReset").addEventListener("click",function(){saved={};try{localStorage.removeItem(KEY);}catch(e){}Array.prototype.forEach.call($("checklist").querySelectorAll("input"),function(c){c.checked=false;});updMeter();toast("Checklist reset");});
+updMeter();
+
+/* ---------- Prompt builder ---------- */
+var DEEMED={"Domestic Abuse":1,"Stalking":1,"Sexual Crime":1,"Human Trafficking":1};
+var MAJOR={"Murder":1,"Attempted Murder":1,"Kidnap":1};
+var OFFRULES={
+  "Murder":"Murder witness: follow the SIO's witness interview strategy within the Major Investigation Team; plan a visually recorded interview for significant witnesses; record the first account verbatim (it may be admissible under ss259 or 260 CP(S)A 1995); consider threat-to-life procedures and Family Liaison where the witness is bereaved.",
+  "Attempted Murder":"Attempted murder: confirm medical fitness with clinicians before interview; keep first accounts short; if the victim's life is at risk obtain an urgent, ideally visually recorded, account; capture the violence, any weapon and words spoken in detail as evidence of intent.",
+  "Kidnap":"Kidnap: preservation of life is the priority and the SIO directs all contact. Capture proof-of-life information, demands, deadlines and contact methods. Do not ask a family member to make or record contact without RIPSA authorisation (see Investigatory Powers Act 2016 s44). For a released victim, welfare and forensic recovery come before the full interview.",
+  "Extortion":"Extortion: assess welfare and immediate safety first; preserve messages, call logs and payment details; capture demands and threats in the victim's exact words. If police want the victim to keep contact with the offender, flag it for RIPSA CHIS or directed surveillance authorisation."
+};
+function checked(groupId){return Array.prototype.filter.call($(groupId).querySelectorAll("input"),function(c){return c.checked;}).map(function(c){return c.value;});}
+function listJoin(a){if(!a.length)return"";if(a.length===1)return a[0];return a.slice(0,-1).join(", ")+" and "+a[a.length-1];}
+
+function buildPrompt(){
+  var ageRaw=$("f-age").value.trim(),age=parseInt(ageRaw,10);
+  var ageValid=ageRaw===""||(/^\d{1,3}$/.test(ageRaw)&&age>=0&&age<=120);
+  var vul=checked("f-vul"),other=$("f-vul-other").value.trim();if(other)vul.push(other);
+  var req=checked("f-req"),lang=$("f-lang").value.trim();
+  req=req.map(function(r){return (r.indexOf("spoken-language")>-1&&lang)?"a "+lang+" interpreter":r;});
+  var off=$("f-off").value,ident=$("f-ident").value,ctx=$("f-ctx").value.trim();
+  var isChild=ageValid&&ageRaw!==""&&age<18;
+  var deemed=!!DEEMED[off];
+
+  var flags=[];
+  if(!ageValid)flags.push(["stop","Check age","Enter age as a whole number between 0 and 120."]);
+  if(isChild)flags.push(["stop","Child witness","Under 18: use the Scottish Child Interview Model with trained JII interviewers. This prompt is for planning only."]);
+  if(deemed)flags.push(["ok","Deemed vulnerable",off+" complainers are deemed vulnerable under s271(1) and entitled to standard special measures."]);
+  if(req.some(function(r){return r.indexOf("Appropriate Adult")>-1;}))flags.push(["warn","Appropriate Adult","Request through the local Appropriate Adult service; record the reason."]);
+  if(MAJOR[off])flags.push(["stop","Major investigation","Follow the SIO's witness interview strategy. Consult an interview adviser for significant witnesses."]);
+  if(off==="Kidnap"||off==="Extortion")flags.push(["warn","RIPSA","Do not task the witness to make, keep or record contact without authorisation."]);
+  if(off==="Murder")flags.push(["warn","s271(1)(b)","A witness whose evidence is affected by fear or distress may be vulnerable. Record it for the PF."]);
+  if(ident==="none")flags.push(["warn","ADVOKATE","No identification issue selected. ADVOKATE limbs will be kept brief."]);
+  if(/\b[A-Z][a-z]+ [A-Z][a-z]+\b/.test(ctx))flags.push(["warn","Personal data?","The context may contain a name. Remove names and identifiers before pasting into an AI tool."]);
+  var fh="";flags.forEach(function(f){fh+='<div class="note '+f[0]+'"><span class="tag">'+esc(f[1])+'</span><p>'+esc(f[2])+'</p></div>';});
+  $("flags").innerHTML=fh;
+
+  var profile=(ageValid&&ageRaw!==""?"Aged "+age:"Age not stated")+(vul.length?", with "+listJoin(vul):", no specific vulnerability recorded")+".";
+  var reqs=req.length?"Requires "+listJoin(req)+".":"No special requirements recorded.";
+  var identLine={stranger:"Identification of a stranger is in issue. Apply all eight ADVOKATE limbs in full.",known:"The suspect is known to the witness. Focus ADVOKATE on the K limb (how, how well and how long known) while still covering the other limbs.",none:"Identification is not in issue. Cover ADVOKATE briefly for completeness only."}[ident];
+
+  var p=[];
+  p.push("ROLE");
+  p.push("You are an experienced criminal investigator in Scotland, trained in interviewing vulnerable adult witnesses. Follow current Police Scotland SOPs and the PEACE model, COPFS guidance, the Criminal Procedure (Scotland) Act 1995 and the Regulation of Investigatory Powers (Scotland) Act 2000. Use UK English.");
+  p.push("");
+  p.push("TASK");
+  p.push("Write an interview plan and question set for the witness below. It must be legally sound, trauma-informed and non-leading. Combine open cognitive free recall (TED: Tell, Explain, Describe) with the ADVOKATE identification framework.");
+  p.push("");
+  p.push("CASE INPUTS");
+  p.push("- Witness profile: "+profile);
+  p.push("- Special requirements: "+reqs);
+  p.push("- Offence type: "+off+(deemed?" (complainer likely deemed vulnerable under s271(1) CP(S)A 1995)":"")+".");
+  p.push("- Identification: "+identLine);
+  if(ctx)p.push("- Context: "+ctx);
+  p.push("");
+  p.push("RULES");
+  p.push("1. Use only open, non-leading questions until free recall is complete. Never introduce details the witness has not given. Adapt language to the witness's needs (short sentences, one question at a time, plain words).");
+  p.push("2. ADVOKATE: give separate questions for Amount of time, Distance, Visibility, Obstructions, Known or seen before, Any reason to remember, Time lapse, and Errors or discrepancies against the first description. For each, add one 'avoid' example of a leading version.");
+  p.push("3. Special measures: include questions that capture the witness's fears, observed reactions and views on how they would give their best evidence. Describe live link (s271J), screen (s271K), supporter (s271L) and evidence by commissioner (s271I) neutrally. Do not promise any measure; the PF and court decide.");
+  p.push("4. Add investigator checkpoints (marked [CHECK]) for recording physical and emotional reactions, breaks and any change in presentation.");
+  p.push("5. Do not promise outcomes, charges or court results.");
+  p.push("6. Recall aids: after free recall, add Cognitive Interview prompts based on the research of Professor Becky Milne (University of Portsmouth): report everything without guessing, mental reinstatement of context, sketch plan, optional focused retrieval, pauses, and transfer of control. Simplify them for the witness's needs, use change order only with care, and do not use 'change perspective'. Witnesses with learning disabilities are more open to leading questions, so return to open questions after each aid.");
+  p.push("7. Procedure: follow current Police Scotland SOPs and the PEACE model. Treat ACPOS guidance as legacy (superseded April 2013). Never task the witness to gather information or maintain contact with a suspect, as this may make them a covert human intelligence source requiring authorisation under RIPSA 2000.");
+  if(OFFRULES[off])p.push("8. "+OFFRULES[off]);
+  if(isChild)p.push((OFFRULES[off]?"9":"8")+". The witness is under 18. State at the top that the interview must follow the Scottish Child Interview Model with trained JII interviewers, and frame the output as planning notes only.");
+  p.push("");
+  p.push("OUTPUT FORMAT");
+  p.push("Section 1: Preparation, environment and ground rules (room set-up, Appropriate Adult / interpreter / intermediary checks, ground rules in plain language).");
+  p.push("Section 2: Cognitive free recall (Tell me / Explain to me / Describe for me probes), followed by Cognitive Interview recall aids with scripted wording.");
+  p.push("Section 3: ADVOKATE matrix (a table: limb, objective, question, avoid, what to record).");
+  p.push("Section 4: Vulnerability and special measures (fears, reactions, information for the PF's notice or application).");
+  p.push("Section 5: Closing (Victim Care Card, Victim Support Scotland, next steps, safety and referral checks).");
+  if(OFFRULES[off])p.push("Section 6: Offence-specific protocol and questions for "+off.toLowerCase()+".");
+  p.push("");
+  p.push("Finish with a short list of any assumptions you made. All questions will be reviewed by a trained officer before use.");
+
+  var text=p.join("\n");
+  $("prompt").textContent=text;
+  var words=text.split(/\s+/).filter(Boolean).length;
+  $("pcount").textContent=words+" words";
+  return text;
+}
+var pform=$("pform");
+pform.addEventListener("input",buildPrompt);
+pform.addEventListener("change",buildPrompt);
+pform.addEventListener("submit",function(e){e.preventDefault();});
+$("copyPrompt").addEventListener("click",function(){copyText(buildPrompt(),$("copyPrompt"));});
+function loadExample(){
+  $("f-age").value="34";$("f-ident").value="stranger";
+  $("v1").checked=true;$("v3").checked=true;
+  $("r1").checked=true;$("r4").checked=true;$("r5").checked=true;
+  $("f-off").value="Serious Assault";
+  $("f-ctx").value="Incident at night on a residential street. Witness gave a brief description to the call handler.";
+}
+$("clearForm").addEventListener("click",function(){
+  pform.reset();$("f-ident").value="stranger";$("f-off").value="Domestic Abuse";buildPrompt();
+  var n=$("clearForm").closest(".note");if(n)n.hidden=true;toast("Form cleared");
+});
+loadExample();buildPrompt();
+
+/* ---------- Search ---------- */
+var input=$("q"),results=$("results"),activeIdx=-1,current=[];
+function indexItems(){
+  return Array.prototype.map.call(document.querySelectorAll(".si"),function(n){
+    return {node:n,sec:n.getAttribute("data-sec")||"",text:textOf(n)};
+  });
+}
+function textOf(n){var c=n.cloneNode(true);Array.prototype.forEach.call(c.querySelectorAll(".copy"),function(b){b.remove();});return (c.textContent||"").replace(/\s+/g," ").trim();}
+var INDEX=indexItems();
+var SYN={aa:"appropriate adult",bsl:"bsl",pf:"procurator fiscal",jii:"child interview",scim:"child interview",vwn:"notice"};
+function snippet(text,terms){
+  var low=text.toLowerCase(),pos=-1;
+  terms.forEach(function(t){var i=low.indexOf(t);if(i>-1&&(pos===-1||i<pos))pos=i;});
+  var start=Math.max(0,pos-40),s=(start>0?"…":"")+text.slice(start,start+160)+(text.length>start+160?"…":"");
+  var h=esc(s);
+  terms.forEach(function(t){if(!t)return;var re=new RegExp("("+esc(t).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig");h=h.replace(re,"<mark>$1</mark>");});
+  return h;
+}
+function search(qs){
+  var raw=qs.trim().toLowerCase();
+  if(!raw){close();return;}
+  var terms=raw.split(/\s+/).filter(Boolean).map(function(t){return SYN[t]||t;});
+  var flat=[];terms.forEach(function(t){t.split(" ").forEach(function(x){if(x)flat.push(x);});});
+  current=INDEX.filter(function(it){if(it.node.closest("[hidden]"))return false;var l=(it.text+" "+it.sec).toLowerCase();return flat.every(function(t){return l.indexOf(t)>-1;});});
+  // include hidden ADVOKATE cards too (filter may hide them)
+  INDEX.forEach(function(it){if(it.node.classList.contains("card")&&it.node.hidden&&current.indexOf(it)===-1){var l=(it.text+" "+it.sec).toLowerCase();if(flat.every(function(t){return l.indexOf(t)>-1;}))current.push(it);}});
+  activeIdx=current.length?0:-1;
+  var h='<div class="meta">'+current.length+" result"+(current.length===1?"":"s")+(current.length>40?" · showing first 40":"")+" · Enter to open, Esc to close</div>";
+  if(!current.length)h+='<div class="none">No matches. Try "distance", "screen", "Appropriate Adult" or "s271".</div>';
+  current.slice(0,40).forEach(function(it,i){h+='<button type="button" role="option" data-i="'+i+'"'+(i===0?' class="act" aria-selected="true"':' aria-selected="false"')+'><span class="sec">'+esc(it.sec)+'</span><span class="snip">'+snippet(it.text,flat)+'</span></button>';});
+  results.innerHTML=h;results.hidden=false;input.setAttribute("aria-expanded","true");
+}
+function close(){results.hidden=true;results.innerHTML="";input.setAttribute("aria-expanded","false");activeIdx=-1;current=[];}
+function go(i){
+  var it=current[i];if(!it)return;
+  var n=it.node;
+  if(n.classList.contains("card")&&n.hidden){filters.children[0].click();}
+  close();
+  n.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+  n.classList.remove("flash");void n.offsetWidth;n.classList.add("flash");
+}
+function setActive(i){
+  var btns=results.querySelectorAll("button");if(!btns.length)return;
+  activeIdx=(i+btns.length)%btns.length;
+  Array.prototype.forEach.call(btns,function(b,j){b.classList.toggle("act",j===activeIdx);b.setAttribute("aria-selected",j===activeIdx?"true":"false");});
+  btns[activeIdx].scrollIntoView({block:"nearest"});
+}
+var debT;
+input.addEventListener("input",function(){clearTimeout(debT);debT=setTimeout(function(){search(input.value);},80);});
+input.addEventListener("focus",function(){if(input.value.trim())search(input.value);});
+input.addEventListener("keydown",function(e){
+  if(e.key==="ArrowDown"){e.preventDefault();setActive(activeIdx+1);}
+  else if(e.key==="ArrowUp"){e.preventDefault();setActive(activeIdx-1);}
+  else if(e.key==="Enter"){e.preventDefault();if(activeIdx>-1)go(activeIdx);}
+  else if(e.key==="Escape"){input.value="";close();}
+});
+results.addEventListener("mousedown",function(e){e.preventDefault();});
+results.addEventListener("click",function(e){var b=e.target.closest("button[data-i]");if(b)go(parseInt(b.getAttribute("data-i"),10));});
+document.addEventListener("click",function(e){if(!e.target.closest(".search"))close();});
+document.addEventListener("keydown",function(e){
+  var tag=(document.activeElement&&document.activeElement.tagName)||"";
+  if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(tag)){e.preventDefault();input.focus();}
+});
+
+/* ---------- Section tracking ---------- */
+var links=Array.prototype.slice.call(document.querySelectorAll("#rail a"));
+var secs=links.map(function(a){return document.getElementById(a.getAttribute("href").slice(1));});
+function setHeaderH(){var h=$("top").getBoundingClientRect().height;document.documentElement.style.setProperty("--hh",Math.round(h)+"px");}
+setHeaderH();window.addEventListener("resize",setHeaderH);
+var lastCur=-1;
+function onScroll(){
+  var y=window.scrollY+170,cur=0;
+  secs.forEach(function(s,i){if(s&&s.offsetTop<=y)cur=i;});
+  if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)cur=secs.length-1;
+  if(cur===lastCur)return;lastCur=cur;
+  links.forEach(function(a,i){var on=i===cur;a.classList.toggle("on",on);if(on)a.setAttribute("aria-current","true");else a.removeAttribute("aria-current");});
+  var rail=$("rail");if(rail.scrollWidth>rail.clientWidth){var l=links[cur];rail.scrollTo({left:Math.max(0,l.offsetLeft-rail.clientWidth/2+l.offsetWidth/2),behavior:"auto"});}
+}
+var ticking=false;
+window.addEventListener("scroll",function(){if(!ticking){ticking=true;requestAnimationFrame(function(){onScroll();ticking=false;});}},{passive:true});
+onScroll();
+})();
+</script>
+</body>
+</html>
