@@ -17,13 +17,6 @@ An unofficial, single-page aide-memoire for planning interviews with vulnerable 
 
 Open `index.html` in any modern browser. There is no build step and no dependencies. Fonts load from Google Fonts, and system fonts are used if they are unavailable.
 
-## Publish with GitHub Pages
-
-1. Create a new repository and upload the contents of this folder (`index.html`, `README.md`, `.nojekyll`) to the root.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**, select `main` and `/ (root)`, then **Save**.
-4. The site appears at `https://<your-username>.github.io/<repository-name>/` within a few minutes.
-
 GitHub Pages sites are public, even from a private repository on most plans. Do not add case data or personal information to the repository.
 
 ## Important
