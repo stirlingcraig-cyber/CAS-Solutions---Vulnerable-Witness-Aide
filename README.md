@@ -13,12 +13,3 @@ An unofficial, single-page aide-memoire for planning interviews with vulnerable 
 - **Pre-interview checklist**, saved in your own browser only.
 - Copy buttons on every question, light and dark themes, and a phone-friendly layout.
 
-## Run it
-
-Open `index.html` in any modern browser. There is no build step and no dependencies. Fonts load from Google Fonts, and system fonts are used if they are unavailable.
-
-GitHub Pages sites are public, even from a private repository on most plans. Do not add case data or personal information to the repository.
-
-## Important
-
-This is a planning aid, not Police Scotland or COPFS policy, and it is not endorsed by either. Check wording and legal references against current SOPs and COPFS guidance before operational use. Witnesses under 18 should be interviewed through the Scottish Child Interview Model. Only paste prompts into AI tools approved for the information involved.
